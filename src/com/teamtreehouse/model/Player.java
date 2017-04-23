@@ -1,6 +1,12 @@
 package com.teamtreehouse.model;
 
+import javafx.collections.transformation.SortedList;
+
 import java.io.Serializable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Player implements Comparable<Player>, Serializable {
   private static final long serialVersionUID = 1L;
@@ -36,7 +42,15 @@ public class Player implements Comparable<Player>, Serializable {
   @Override
   public int compareTo(Player other) {
     // We always want to sort by last name then first name
-    return 0;
+    if(equals(other)) {
+      return 0;
+    }
+    int lastNameCompare = lastName.compareTo(other.lastName);
+    if(lastNameCompare == 0) {
+      return firstName.compareTo(other.firstName);
+    }
+
+    return lastNameCompare;
   }
 
   @Override
@@ -65,6 +79,20 @@ public class Player implements Comparable<Player>, Serializable {
   @Override
   public String toString() {
     return String.format("%s, %s, %s, %s", lastName, firstName, heightInInches, previousExperience);
+  }
+
+  public String playerHeightGroup() {
+    String heightKey = "";
+    if(getHeightInInches() < 41) {
+      heightKey = "35-40 inches";
+    } else
+      if(getHeightInInches() > 46) {
+        heightKey = "47-50 inches";
+      } else
+        heightKey = "41-46 inches";
+
+
+    return heightKey;
   }
   
 }

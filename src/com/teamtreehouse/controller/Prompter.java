@@ -34,7 +34,9 @@ public class Prompter {
     mMenu.put("create", "Create a new team.");
     mMenu.put("add", "Add player to a team.");
     mMenu.put("remove", "Remove a player from a team.");
-    mMenu.put("print", "Print a roster of a team.");
+    mMenu.put("height", "Print a roster of a team by height.");
+    mMenu.put("roster", "Print a roster of a team.");
+    mMenu.put("balance", "Print a league balance report of team experience level.");
     mMenu.put("quit", "Exit the program.");
   }
   
@@ -46,7 +48,7 @@ public class Prompter {
                         option.getKey(),
                         option.getValue());
     }
-    System.out.printf("What do you want to do?: ");
+    System.out.printf("%nWhat do you want to do?: ");
     String choice = mReader.readLine(); //reads in what user has entered and assigns it to choice
     return choice.trim().toLowerCase(); //returns user's choice, trims off excess at beginning and end,converts to lowercase
   }
@@ -57,43 +59,55 @@ public class Prompter {
     do { //goes through and asks user what they want to do at least one time
       try {
         choice = promptAction(); //assign user's choice to what they entered
-        System.out.printf("Your choice is %s %n",
-                          choice);
         switch(choice) { //does something depending on what the user entered
           case "create": //create a new team
+            System.out.printf("%nYou chose create team.%n");
             Team team = promptNewTeam();
             mLeague.addTeam(team);
+            System.out.printf("%n");
             break;
           case "add": //ask what team to add to, in alphabetical order, asks what player you want to add
-            System.out.printf("What team do you want the player to be on?%n");
+            System.out.printf("%nWhich team do you want the player to be on?%n");
             String teamChoice = chooseTeam();
             Team chosenTeam = mLeague.getTeam(teamChoice);
           
-            System.out.printf("What player do you want to add to %s?%n", teamChoice);
+            System.out.printf("%nChoose a player to add to %s. Enter a number.%n", teamChoice);
             int playerChoice = Integer.parseInt(choosePlayer().trim());
             Player chosenPlayer = mPlayers[playerChoice];
-            System.out.printf("You chose player %s", chosenPlayer.toString());
             chosenTeam.addPlayer(chosenPlayer);
-          
-            chosenTeam.printPlayers();
+            System.out.printf("Player added!%n%n");
+
             break;
           case "remove":
-            System.out.printf("What team do you want to remove a player from?%n");
+            System.out.printf("%nWhich team do you want to remove a player from?%n");
             String removeTeamChoice = chooseTeam();
             Team removeFromChosenTeam = mLeague.getTeam(removeTeamChoice);
           
-            System.out.printf("What player do you want to remove from %s?%n", removeTeamChoice);
+            System.out.printf("%nWhich player do you want to remove from %s? Enter a number.%n", removeTeamChoice);
             int removePlayerChoice = Integer.parseInt(choosePlayerFromTeam(removeFromChosenTeam));
             Player removeChosenPlayer = mPlayers[removePlayerChoice];
             removeFromChosenTeam.removePlayer(removeChosenPlayer);
-          
+            System.out.printf("Player removed.%n");
             break;
-          case "print":
-            System.out.printf("What team do you want to print?");
+          case "height":
+            System.out.printf("%nWhich team's roster - grouped by height - do you want to print?%n");
             String printTeamChoice = chooseTeam();
             Team printChosenTeam = mLeague.getTeam(printTeamChoice);
-            
-            printChosenTeam.printPlayers();
+            System.out.printf("%nList of players grouped by height on %s:%n", printTeamChoice);
+            printChosenTeam.printPlayersByHeightGroup();
+            System.out.printf("%n");
+            break;
+          case "roster":
+            System.out.printf("%nWhich team's roster do you want to print?%n");
+            String rosterTeamChoice = chooseTeam();
+            Team printRosterTeam = mLeague.getTeam(rosterTeamChoice);
+            System.out.printf("%nList of players on %s:%n", rosterTeamChoice);
+            printRosterTeam.printPlayers();
+            System.out.printf("%n");
+            break;
+          case "balance":
+            System.out.printf("%n");
+            mLeague.printTeamExperience();
             break;
           case "quit": //quit the program
             System.out.printf("Quitting the program. %n%n%n");
